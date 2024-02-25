@@ -13,8 +13,9 @@ const CreateCampaign = () => {
   const { createCampaign } = useStateContext();
   const [form, setForm] = useState({
     name: '',
-    title: '',
+    title: '', 
     description: '',
+    category:'',
     target: '', 
     deadline: '',
     image: ''
@@ -65,6 +66,44 @@ const CreateCampaign = () => {
           />
         </div>
 
+        <div className='flex flex-wrap gap-[40px]'>
+        <FormField 
+            labelName="Campaign Category *"
+            placeholder="Campaign category"
+            inputType="text"
+            value={form.category}
+            handleChange={(e) => handleFormFieldChange('category', e)}
+          />
+
+          <FormField 
+            labelName="Goal *"
+            placeholder="ETH 0.50"
+            inputType="text"
+            value={form.target}
+            handleChange={(e) => handleFormFieldChange('target', e)}
+          />
+        </div>
+
+        <div className="flex flex-wrap gap-[40px]">
+          
+          <FormField 
+            labelName="End Date *"
+            placeholder="End Date"
+            inputType="date"
+            value={form.deadline}
+            handleChange={(e) => handleFormFieldChange('deadline', e)}
+          />
+
+          <FormField 
+            labelName="Campaign image *"
+            placeholder="Place image URL of your campaign"
+            inputType="url"
+            value={form.image}
+            handleChange={(e) => handleFormFieldChange('image', e)}
+          />
+        </div>
+
+
         <FormField 
             labelName="Story *"
             placeholder="Write your story"
@@ -78,31 +117,7 @@ const CreateCampaign = () => {
           <h4 className="font-epilogue font-bold text-[25px] text-white ml-[20px]">You will get 100% of the raised amount</h4>
         </div>
 
-        <div className="flex flex-wrap gap-[40px]">
-          <FormField 
-            labelName="Goal *"
-            placeholder="ETH 0.50"
-            inputType="text"
-            value={form.target}
-            handleChange={(e) => handleFormFieldChange('target', e)}
-          />
-          <FormField 
-            labelName="End Date *"
-            placeholder="End Date"
-            inputType="date"
-            value={form.deadline}
-            handleChange={(e) => handleFormFieldChange('deadline', e)}
-          />
-        </div>
-
-        <FormField 
-            labelName="Campaign image *"
-            placeholder="Place image URL of your campaign"
-            inputType="url"
-            value={form.image}
-            handleChange={(e) => handleFormFieldChange('image', e)}
-          />
-
+        
           <div className="flex justify-center items-center mt-[40px]">
             <CustomButton 
               btnType="submit"
