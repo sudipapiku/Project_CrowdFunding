@@ -7,4 +7,6 @@ export { default as FundCard } from './FundCard';
 export { default as CountBox } from './CountBox';
 export { default as Loader } from './Loader';
 export { default as Footer } from './Footer';
-export { default as WFDisplayCampaigns } from './WFDisplayCampaigns';
+export { default as ProfileDisplayCampaigns } from './ProfileDisplayCampaigns';
+export { default as WithdrawalDisplayCampaign } from './WithdrawalDisplayCampaign';
+

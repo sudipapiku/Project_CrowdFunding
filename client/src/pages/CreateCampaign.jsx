@@ -78,7 +78,7 @@ const CreateCampaign = () => {
         <FormField 
             labelName="Campaign Category *"
             placeholder="Campaign category"
-            inputType="text"
+            inputType="select"
             value={form.category}
             handleChange={(e) => handleFormFieldChange('category', e)}
           />
@@ -119,7 +119,6 @@ const CreateCampaign = () => {
             value={form.description}
             handleChange={(e) => handleFormFieldChange('description', e)}
           />
-          
 
         <div className="w-full flex justify-start items-center p-4 bg-[#8471cc] h-[90px] rounded-[10px]">
           <img src={money} alt="money" className="w-[40px] h-[40px] object-contain"/>

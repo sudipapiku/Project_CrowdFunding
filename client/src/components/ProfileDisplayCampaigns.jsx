@@ -4,11 +4,11 @@ import { v4 as uuidv4 } from "uuid";
 import FundCard from './FundCard';
 import { loader } from '../assets';
 
-const WFDisplayCampaigns = ({ title, isLoading, campaigns }) => {
+const ProfileDisplayCampaigns = ({ title, isLoading, campaigns }) => {
   const navigate = useNavigate();
 
   const handleNavigate = (campaign) => {
-    navigate(`/wf-campaign-details/${campaign.title}`, { state: campaign })
+    navigate(`/profile-campaign-details/${campaign.title}`, { state: campaign })
   }
   
   return (
@@ -36,4 +36,4 @@ const WFDisplayCampaigns = ({ title, isLoading, campaigns }) => {
   )
 }
 
-export default WFDisplayCampaigns
+export default ProfileDisplayCampaigns

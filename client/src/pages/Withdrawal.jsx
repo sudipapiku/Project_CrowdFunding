@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react'
 
-import { ProfileDisplayCampaigns } from '../components';
+import { WithdrawalDisplayCampaign } from '../components';
 import { useStateContext } from '../context'
 
-const Profile = () => {
+const Withdrawal = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [campaigns, setCampaigns] = useState([]);
 
@@ -21,7 +21,7 @@ const Profile = () => {
   }, [address, contract]);
 
   return (
-    <ProfileDisplayCampaigns 
+    <WithdrawalDisplayCampaign 
       title="Your Campaigns"
       isLoading={isLoading}
       campaigns={campaigns}
@@ -29,4 +29,4 @@ const Profile = () => {
   ) 
 }
 
-export default Profile
+export default Withdrawal

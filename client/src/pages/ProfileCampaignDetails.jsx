@@ -6,7 +6,7 @@ import { CountBox, CustomButton, Loader } from "../components";
 import { calculateBarPercentage, daysLeft } from "../utils";
 import { thirdweb } from "../assets";
 
-const WFCampaignDetails = () => {
+const ProfileCampaignDetails = () => {
   const { state } = useLocation();
   const navigate = useNavigate();
   const {
@@ -198,4 +198,4 @@ const WFCampaignDetails = () => {
   );
 };
 
-export default WFCampaignDetails;
+export default ProfileCampaignDetails;

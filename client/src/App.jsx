@@ -2,7 +2,8 @@ import React from 'react';
 import { Route, Routes } from 'react-router-dom';
 
 import { Sidebar, Navbar , Footer } from './components';
-import { CampaignDetails, CreateCampaign, Home, Profile , WFCampaignDetails } from './pages';
+import { CampaignDetails, CreateCampaign, Home, Profile, ProfileCampaignDetails, WithdrawalCampaignDetails } from './pages';
+import Withdrawal from './pages/Withdrawal';
 
 
 const App = () => {
@@ -21,9 +22,12 @@ const App = () => {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path='/withdrawal' element={<Withdrawal/>} />
           <Route path="/create-campaign" element={<CreateCampaign />} />
           <Route path="/campaign-details/:id" element={<CampaignDetails />} />
-          <Route path='/wf-campaign-details/:id' element={<WFCampaignDetails/>} />
+          <Route path='/profile-campaign-details/:id' element={<ProfileCampaignDetails/>} />
+          <Route path='/withdrawal-campaign-details/:id' element={<WithdrawalCampaignDetails/>} />
+
 
         </Routes>
       </div>  
