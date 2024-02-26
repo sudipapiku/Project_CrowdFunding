@@ -7,8 +7,9 @@ import { EditionMetadataWithOwnerOutputSchema } from '@thirdweb-dev/sdk';
 const StateContext = createContext();
 
 export const StateContextProvider = ({ children }) => {
-  const { contract } = useContract('0x5aA054229866283F71eDb1e2F6de50Fe14718Ac3');
+  const { contract } = useContract('0x989D1cFe6c19C9b5Cd43D343A4C3748280f5B1a7');
   const { mutateAsync: createCampaign } = useContractWrite(contract, 'createCampaign');
+
 
   const address = useAddress();
   const connect = useMetamask();
@@ -33,6 +34,36 @@ export const StateContextProvider = ({ children }) => {
     }
   }
 
+
+  const isCampaignActive = async (campaignId) => {
+    try {
+      const isActive = await contract.call('isCampaignActive', [campaignId]); // Assuming 'isCampaignActive' is a function in your contract that returns the status
+      return isActive;
+    } catch (error) {
+      console.error("Error fetching campaign status:", error);
+      return false; // Return false in case of error
+    }
+  }
+  
+
+  const withdrawFunds = async (campaignId) => {
+    try {
+      const data = await contract.call('withdrawFunds', [campaignId]);
+      console.log("withdrawFunds success", data);
+    } catch (error) {
+      console.log("withdrawFunds failure", error);
+    }
+  }
+  
+  const stopCampaign = async (campaignId) => {
+    try {
+      const data = await contract.call('stopCampaign', [campaignId]);
+      console.log("stopCampaign success", data);
+    } catch (error) {
+      console.log("stopCampaign failure", error);
+    }
+  }
+  
   const getCampaigns = async () => {
     const campaigns = await contract.call('getCampaigns');
 
@@ -89,10 +120,13 @@ export const StateContextProvider = ({ children }) => {
         contract,
         connect,
         createCampaign: publishCampaign,
+        isCampaignActive,
+        withdrawFunds,
+        stopCampaign,
         getCampaigns,
         getUserCampaigns,
         donate,
-        getDonations
+        getDonations,
       }}
     >
       {children}

@@ -7,14 +7,18 @@ import { CountBox, CustomButton, Loader } from '../components';
 import { calculateBarPercentage, daysLeft } from '../utils';
 import { thirdweb } from '../assets';
 
+
+
 const CampaignDetails = () => {
   const { state } = useLocation();
   const navigate = useNavigate();
-  const { donate, getDonations, contract, address } = useStateContext();
+  const { donate, getDonations, isCampaignActive, contract, address } = useStateContext();
 
   const [isLoading, setIsLoading] = useState(false);
   const [amount, setAmount] = useState('');
   const [donators, setDonators] = useState([]);
+  const [isActive, setIsActive] = useState(true); // Default to true until fetched
+
 
   const remainingDays = daysLeft(state.deadline);
 
@@ -25,7 +29,16 @@ const CampaignDetails = () => {
   }
 
   useEffect(() => {
-    if(contract) fetchDonators();
+    if(contract) {
+      fetchDonators();
+    }
+
+    const fetchIsActive = async () => {
+        const active = await isCampaignActive(state.pId);
+        setIsActive(active);
+    };
+      fetchIsActive();
+
   }, [contract, address])
 
   const handleDonate = async () => {
@@ -98,13 +111,16 @@ const CampaignDetails = () => {
         </div>
 
         <div className="flex-1">
+
           <h4 className="font-epilogue font-semibold text-[18px] text-white uppercase">Fund</h4>   
 
-          <div className="mt-[20px] flex flex-col p-4 bg-[#1c1c24] rounded-[10px]">
-            <p className="font-epilogue fount-medium text-[20px] leading-[30px] text-center text-[#808191]">
-              Fund the campaign
-            </p>
-            <div className="mt-[30px]">
+
+          {isActive ? ( // Conditionally render based on isActive
+              <div className="mt-[20px] flex flex-col p-4 bg-[#1c1c24] rounded-[10px]">
+
+              <p className="font-epilogue fount-medium text-[20px] leading-[30px] text-center text-[#808191]">
+              Fund the campaign</p>
+              <div className="mt-[30px]">
               <input 
                 type="number"
                 placeholder="ETH 0.1"
@@ -126,7 +142,12 @@ const CampaignDetails = () => {
                 handleClick={handleDonate}
               />
             </div>
-          </div>
+            </div>
+
+            ) : (
+              <p className="font-epilogue font-normal text-[16px] text-[#b2b3bd] leading-[26px]">This campaign is not active.</p>
+            )}
+
         </div>
       </div>
     </div>

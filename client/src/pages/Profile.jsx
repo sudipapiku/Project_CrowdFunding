@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 
-import { DisplayCampaigns } from '../components';
+import { WFDisplayCampaigns } from '../components';
 import { useStateContext } from '../context'
 
 const Profile = () => {
@@ -21,12 +21,12 @@ const Profile = () => {
   }, [address, contract]);
 
   return (
-    <DisplayCampaigns 
+    <WFDisplayCampaigns 
       title="Your Campaigns"
       isLoading={isLoading}
       campaigns={campaigns}
     />
-  )
+  ) 
 }
 
 export default Profile

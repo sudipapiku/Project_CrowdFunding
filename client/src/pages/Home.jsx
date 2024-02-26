@@ -15,7 +15,7 @@ const Home = () => {
     setCampaigns(data);
     setIsLoading(false);
   }
-
+ 
   useEffect(() => {
     if(contract) fetchCampaigns();
   }, [address, contract]);

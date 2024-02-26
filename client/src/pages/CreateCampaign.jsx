@@ -22,6 +22,14 @@ const CreateCampaign = () => {
   });
 
   const handleFormFieldChange = (fieldName, e) => {
+    if (fieldName === 'deadline') {
+      const selectedDate = new Date(e.target.value);
+      const currentDate = new Date();
+      if (selectedDate < currentDate) {
+        alert('Selected date should be in the future, not in the past.');
+        return;
+      }
+    }
     setForm({ ...form, [fieldName]: e.target.value })
   }
 
@@ -93,7 +101,7 @@ const CreateCampaign = () => {
             value={form.deadline}
             handleChange={(e) => handleFormFieldChange('deadline', e)}
           />
-
+ 
           <FormField 
             labelName="Campaign image *"
             placeholder="Place image URL of your campaign"
@@ -111,6 +119,7 @@ const CreateCampaign = () => {
             value={form.description}
             handleChange={(e) => handleFormFieldChange('description', e)}
           />
+          
 
         <div className="w-full flex justify-start items-center p-4 bg-[#8471cc] h-[90px] rounded-[10px]">
           <img src={money} alt="money" className="w-[40px] h-[40px] object-contain"/>

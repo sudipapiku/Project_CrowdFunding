@@ -13,6 +13,8 @@ contract CrowdFunding {
         string image;
         address[] donators;
         uint256[] donations;
+        bool isActive; // Flag to indicate if the campaign is active or stopped
+
     }
 
     mapping(uint256 => Campaign) public campaigns;
@@ -32,6 +34,8 @@ contract CrowdFunding {
         campaign.deadline = _deadline;
         campaign.amountCollected = 0;
         campaign.image = _image;
+        campaign.isActive = true; // New campaigns are active by default
+
 
         numberOfCampaigns++;
 
@@ -52,6 +56,37 @@ contract CrowdFunding {
             campaign.amountCollected = campaign.amountCollected + amount;
         }
     }
+
+    function isCampaignActive(uint256 _id) public view returns (bool) {
+        require(_id < numberOfCampaigns, "Invalid campaign ID");
+
+        Campaign storage campaign = campaigns[_id];
+        return campaign.isActive && block.timestamp < campaign.deadline;
+    }
+
+
+    function stopCampaign(uint256 _id) public {
+        require(msg.sender == campaigns[_id].owner, "Only the owner can stop the campaign");
+        require(campaigns[_id].isActive, "Campaign is already stopped");
+
+        campaigns[_id].isActive = false;
+    }
+
+
+    function withdrawFunds(uint256 _id) public {
+        Campaign storage campaign = campaigns[_id];
+
+        require(msg.sender == campaign.owner, "Only the owner can withdraw funds");
+        require(block.timestamp >= campaign.deadline || !campaign.isActive, "Withdrawal is only allowed after the deadline or if the campaign is stopped");
+        require(campaign.amountCollected > 0, "Insufficient funds for withdrawal");
+
+        uint256 amountToWithdraw = campaign.amountCollected;
+        campaign.amountCollected = 0;
+
+        payable(campaign.owner).transfer(amountToWithdraw);
+    }
+
+
 
     function getDonators(uint256 _id) view public returns (address[] memory, uint256[] memory) {
         return (campaigns[_id].donators, campaigns[_id].donations);
