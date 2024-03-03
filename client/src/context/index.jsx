@@ -1,15 +1,12 @@
 import React, { useContext, createContext } from 'react';
-
 import { useAddress, useContract, useMetamask, useContractWrite } from '@thirdweb-dev/react';
 import { ethers } from 'ethers';
-import { EditionMetadataWithOwnerOutputSchema } from '@thirdweb-dev/sdk';
 
 const StateContext = createContext();
 
 export const StateContextProvider = ({ children }) => {
   const { contract } = useContract('0x989D1cFe6c19C9b5Cd43D343A4C3748280f5B1a7');
   const { mutateAsync: createCampaign } = useContractWrite(contract, 'createCampaign');
-
 
   const address = useAddress();
   const connect = useMetamask();
@@ -21,7 +18,7 @@ export const StateContextProvider = ({ children }) => {
 					address, // owner
 					form.title, // title
 					form.description, // description
-          form.category, //category
+          form.category, // category
 					form.target,
 					new Date(form.deadline).getTime(), // deadline,
 					form.image,
@@ -34,6 +31,31 @@ export const StateContextProvider = ({ children }) => {
     }
   }
 
+  const stopCampaign = async (campaignId) => {
+    try {
+      const campaign = await contract.call('getCampaign', [campaignId]);
+      const isGoalReached = campaign.amountCollected >= campaign.target;
+
+      // Check if the goal amount is already reached
+      if (isGoalReached) {
+        // Prompt the owner to decide whether to continue the campaign or not
+        const collectExtraAmount = window.confirm("The goal amount is already reached. Do you want to continue the campaign and collect the extra amount?");
+
+        if (collectExtraAmount) {
+          // Continue the campaign by setting isActive to true
+          await contract.call('setCampaignActive', [campaignId, true]);
+          console.log("Campaign continued successfully");
+          return;
+        }
+      }
+
+      // Stop the campaign if the goal amount is reached or if the owner doesn't want to collect the extra amount
+      await contract.call('stopCampaign', [campaignId]);
+      console.log("stopCampaign success");
+    } catch (error) {
+      console.log("stopCampaign failure", error);
+    }
+  }
 
   const isCampaignActive = async (campaignId) => {
     try {
@@ -44,7 +66,6 @@ export const StateContextProvider = ({ children }) => {
       return false; // Return false in case of error
     }
   }
-  
 
   const withdrawFunds = async (campaignId) => {
     try {
@@ -54,16 +75,7 @@ export const StateContextProvider = ({ children }) => {
       console.log("withdrawFunds failure", error);
     }
   }
-  
-  const stopCampaign = async (campaignId) => {
-    try {
-      const data = await contract.call('stopCampaign', [campaignId]);
-      console.log("stopCampaign success", data);
-    } catch (error) {
-      console.log("stopCampaign failure", error);
-    }
-  }
-  
+   
   const getCampaigns = async () => {
     const campaigns = await contract.call('getCampaigns');
 
@@ -111,7 +123,6 @@ export const StateContextProvider = ({ children }) => {
 
     return parsedDonations;
   }
-
 
   return (
     <StateContext.Provider

@@ -36,7 +36,6 @@ contract CrowdFunding {
         campaign.image = _image;
         campaign.isActive = true; // New campaigns are active by default
 
-
         numberOfCampaigns++;
 
         return numberOfCampaigns - 1;
@@ -64,14 +63,12 @@ contract CrowdFunding {
         return campaign.isActive && block.timestamp < campaign.deadline;
     }
 
-
     function stopCampaign(uint256 _id) public {
         require(msg.sender == campaigns[_id].owner, "Only the owner can stop the campaign");
         require(campaigns[_id].isActive, "Campaign is already stopped");
-
+        
         campaigns[_id].isActive = false;
     }
-
 
     function withdrawFunds(uint256 _id) public {
         Campaign storage campaign = campaigns[_id];
@@ -86,7 +83,10 @@ contract CrowdFunding {
         payable(campaign.owner).transfer(amountToWithdraw);
     }
 
-
+    function setCampaignActive(uint256 _id, bool _isActive) public {
+        require(msg.sender == campaigns[_id].owner, "Only the owner can change the campaign status");
+        campaigns[_id].isActive = _isActive;
+    }
 
     function getDonators(uint256 _id) view public returns (address[] memory, uint256[] memory) {
         return (campaigns[_id].donators, campaigns[_id].donations);

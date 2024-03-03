@@ -4,7 +4,7 @@ import { tagType, thirdweb } from '../assets';
 import { daysLeft } from '../utils';
 
 const FundCard = ({ owner, title, description,category, target, deadline, amountCollected, image, handleClick }) => {
-  const remainingDays = daysLeft(deadline);
+  const remainingDays = deadline > Date.now() ? daysLeft(deadline) : 0;
   
   return (
     <div className="sm:w-[288px] w-full rounded-[15px] bg-[#1c1c24] cursor-pointer" onClick={handleClick}>

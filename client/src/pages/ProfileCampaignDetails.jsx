@@ -22,11 +22,11 @@ const ProfileCampaignDetails = () => {
   const [donators, setDonators] = useState([]);
   const [isActive, setIsActive] = useState(true);
 
-  const remainingDays = daysLeft(state.deadline);
+  const remainingDays =
+    state.deadline > Date.now() ? daysLeft(state.deadline) : 0;
 
   const fetchDonators = async () => {
     const data = await getDonations(state.pId);
-
     setDonators(data);
   };
 
@@ -45,14 +45,12 @@ const ProfileCampaignDetails = () => {
   const handleStopCampaign = async () => {
     setIsLoading(true);
     await stopCampaign(state.pId);
-    // navigate('/')
     setIsLoading(false);
   };
 
   const handleWithdrawal = async () => {
     setIsLoading(true);
     await withdrawFunds(state.pId);
-    // navigate('/')
     setIsLoading(false);
   };
 
@@ -181,13 +179,12 @@ const ProfileCampaignDetails = () => {
             ) : (
               <div className="mt-[30px]">
                 <div className="my-[20px] p-4 bg-[#13131a] rounded-[10px]">
-
-                <CustomButton
-                  btnType="button"
-                  title="Withdrawal"
-                  styles="w-full bg-[#8c6dfd]"
-                  handleClick={handleWithdrawal}
-                />
+                  <CustomButton
+                    btnType="button"
+                    title="Withdrawal"
+                    styles="w-full bg-[#8c6dfd]"
+                    handleClick={handleWithdrawal}
+                  />
                 </div>
               </div>
             )}

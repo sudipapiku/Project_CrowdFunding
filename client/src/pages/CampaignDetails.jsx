@@ -20,7 +20,7 @@ const CampaignDetails = () => {
   const [isActive, setIsActive] = useState(true); // Default to true until fetched
 
 
-  const remainingDays = daysLeft(state.deadline);
+  const remainingDays = state.deadline > Date.now() ? daysLeft(state.deadline) : 0;
 
   const fetchDonators = async () => {
     const data = await getDonations(state.pId);
