@@ -5,25 +5,25 @@ import { ethers } from 'ethers';
 const StateContext = createContext();
 
 export const StateContextProvider = ({ children }) => {
-  const { contract } = useContract('0x989D1cFe6c19C9b5Cd43D343A4C3748280f5B1a7');
+  const { contract } = useContract('0xCC94Ac60d86218E92580A39bBa774dAA315ca18e');
   const { mutateAsync: createCampaign } = useContractWrite(contract, 'createCampaign');
 
   const address = useAddress();
-  const connect = useMetamask();
+  const connect = useMetamask(); // Assuming useMetamask provides the 'connect' function
 
   const publishCampaign = async (form) => {
     try {
       const data = await createCampaign({
-				args: [
-					address, // owner
-					form.title, // title
-					form.description, // description
+        args: [
+          address, // owner
+          form.title, // title
+          form.description, // description
           form.category, // category
-					form.target,
-					new Date(form.deadline).getTime(), // deadline,
-					form.image,
-				],
-			});
+          form.target,
+          new Date(form.deadline).getTime(), // deadline,
+          form.image,
+        ],
+      });
 
       console.log("contract call success", data)
     } catch (error) {
