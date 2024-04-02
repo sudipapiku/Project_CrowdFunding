@@ -111,16 +111,12 @@ const CampaignDetails = () => {
         </div>
 
         <div className="flex-1">
-
-          <h4 className="font-epilogue font-semibold text-[18px] text-white uppercase">Fund</h4>   
-
-
-          {isActive ? ( // Conditionally render based on isActive
+          {isActive ? ( 
               <div className="mt-[20px] flex flex-col p-4 bg-[#1c1c24] rounded-[10px]">
 
               <p className="font-epilogue fount-medium text-[20px] leading-[30px] text-center text-[#808191]">
               Fund the campaign</p>
-              <div className="mt-[30px]">
+              <div className="mt-[20px]">
               <input 
                 type="number"
                 placeholder="ETH 0.1"
@@ -132,7 +128,12 @@ const CampaignDetails = () => {
 
               <div className="my-[20px] p-4 bg-[#13131a] rounded-[10px]">
                 <h4 className="font-epilogue font-semibold text-[14px] leading-[22px] text-white">Back it because you believe in it.</h4>
-                <p className="mt-[20px] font-epilogue font-normal leading-[22px] text-[#808191]">Support the project for no reward, just because it speaks to you.</p>
+                <p className="mt-[15px] font-epilogue font-normal leading-[22px] text-[#808191]">Support the project with no reward, 
+                solely because it resonates with you.Additionally, you can find out where the funds are used, 
+                as we utilize blockchain technology, ensuring complete transparency for you. 
+                <a href="https://testnet.ftmscan.com/address/0x878E5F2f14d7324c0E3cD4D4c1346F5F57c9f16e" style={{ color: '#8c6dfd' }} target="_blank" rel="noopener noreferrer"> Click Here.</a> 
+                to see the transaction details of this campaign.
+                </p>
               </div>
 
               <CustomButton 
@@ -145,7 +146,9 @@ const CampaignDetails = () => {
             </div>
 
             ) : (
-              <p className="font-epilogue font-normal text-[16px] text-[#b2b3bd] leading-[26px]">This campaign is not active.</p>
+              <p className="font-epilogue font-normal text-[16px] text-[#b2b3bd] leading-[26px]">This campaign is not active.
+              <a href="https://testnet.ftmscan.com/address/0x878E5F2f14d7324c0E3cD4D4c1346F5F57c9f16e" style={{ color: '#8c6dfd' }} target="_blank" rel="noopener noreferrer"> Click Here.</a> to see the transaction details of this campaign.
+              </p>    
             )}
 
         </div>

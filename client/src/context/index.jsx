@@ -5,7 +5,7 @@ import { ethers } from 'ethers';
 const StateContext = createContext();
 
 export const StateContextProvider = ({ children }) => {
-  const { contract } = useContract('0xCC94Ac60d86218E92580A39bBa774dAA315ca18e');
+  const { contract } = useContract('0x878E5F2f14d7324c0E3cD4D4c1346F5F57c9f16e');
   const { mutateAsync: createCampaign } = useContractWrite(contract, 'createCampaign');
 
   const address = useAddress();
@@ -33,22 +33,6 @@ export const StateContextProvider = ({ children }) => {
 
   const stopCampaign = async (campaignId) => {
     try {
-      const campaign = await contract.call('getCampaign', [campaignId]);
-      const isGoalReached = campaign.amountCollected >= campaign.target;
-
-      // Check if the goal amount is already reached
-      if (isGoalReached) {
-        // Prompt the owner to decide whether to continue the campaign or not
-        const collectExtraAmount = window.confirm("The goal amount is already reached. Do you want to continue the campaign and collect the extra amount?");
-
-        if (collectExtraAmount) {
-          // Continue the campaign by setting isActive to true
-          await contract.call('setCampaignActive', [campaignId, true]);
-          console.log("Campaign continued successfully");
-          return;
-        }
-      }
-
       // Stop the campaign if the goal amount is reached or if the owner doesn't want to collect the extra amount
       await contract.call('stopCampaign', [campaignId]);
       console.log("stopCampaign success");
@@ -57,15 +41,55 @@ export const StateContextProvider = ({ children }) => {
     }
   }
 
+  // Function to continue a campaign
+  const continueCampaign = async (campaignId) => {
+    try {
+      await contract.call('continueCampaign', [campaignId]);
+      console.log("continueCampaign success");
+    } catch (error) {
+        console.log("continueCampaign failure", error);
+    }
+  }
+  
+
   const isCampaignActive = async (campaignId) => {
     try {
-      const isActive = await contract.call('isCampaignActive', [campaignId]); // Assuming 'isCampaignActive' is a function in your contract that returns the status
+      if (!contract) {
+        console.error("Contract object is not initialized");
+        return false;
+      }
+  
+      const isActive = await contract.call('isCampaignActive', [campaignId]);
       return isActive;
     } catch (error) {
       console.error("Error fetching campaign status:", error);
       return false; // Return false in case of error
     }
   }
+  
+  
+
+  const checkAndPromptForCampaignStatus = async (campaignId) => {
+    try {
+      const campaigns = await getCampaigns();
+      const campaign = campaigns[campaignId];
+  
+      if (!campaign) {
+        console.error("Campaign not found");
+        return false;
+      }
+  
+      const isGoalReached = campaign.amountCollected >= campaign.target;
+      const isBeforeDeadline = campaign.deadline > Date.now();
+  
+      return isGoalReached && isBeforeDeadline;
+    } catch (error) {
+      console.log("checkAndPromptForCampaignStatus failure", error);
+      return false;
+    }
+  };
+    
+  
 
   const withdrawFunds = async (campaignId) => {
     try {
@@ -134,7 +158,9 @@ export const StateContextProvider = ({ children }) => {
         isCampaignActive,
         withdrawFunds,
         stopCampaign,
+        continueCampaign,
         getCampaigns,
+        checkAndPromptForCampaignStatus,
         getUserCampaigns,
         donate,
         getDonations,

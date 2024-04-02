@@ -12,15 +12,17 @@ const ProfileCampaignDetails = () => {
   const {
     getDonations,
     stopCampaign,
-    withdrawFunds,
+    continueCampaign,
     isCampaignActive,
     contract,
     address,
+    checkAndPromptForCampaignStatus
   } = useStateContext();
 
   const [isLoading, setIsLoading] = useState(false);
   const [donators, setDonators] = useState([]);
   const [isActive, setIsActive] = useState(true);
+  const [goalReachedBeforeDeadline, setGoalReachedBeforeDeadline] = useState(false);
 
   const remainingDays =
     state.deadline > Date.now() ? daysLeft(state.deadline) : 0;
@@ -42,17 +44,31 @@ const ProfileCampaignDetails = () => {
     fetchIsActive();
   }, [contract, address]);
 
+  useEffect(() => {
+    const checkGoalReached = async () => {
+      if (contract) {
+        const goalReached = await checkAndPromptForCampaignStatus(state.pId);
+        setIsActive(!goalReached); // Set isActive based on the result
+        setGoalReachedBeforeDeadline(goalReached);
+      }
+    };
+    checkGoalReached();
+  }, [contract, state.pId]); 
+
   const handleStopCampaign = async () => {
     setIsLoading(true);
     await stopCampaign(state.pId);
     setIsLoading(false);
+    navigate("/withdrawal");
   };
 
-  const handleWithdrawal = async () => {
+  const handleContinueCampaign = async () => {
     setIsLoading(true);
-    await withdrawFunds(state.pId);
+    await continueCampaign(state.pId);
     setIsLoading(false);
+    // navigate('/');
   };
+
 
   return (
     <div>
@@ -156,40 +172,61 @@ const ProfileCampaignDetails = () => {
           </div>
         </div>
 
-        <div className="flex-1">
+        {goalReachedBeforeDeadline ? (
+
+          <div className="flex-1">
           <div className="mt-[20px] flex flex-col p-4 bg-[#1c1c24] rounded-[10px]">
             <p className="font-epilogue fount-medium text-[20px] leading-[30px] text-center text-white">
               Fund Transfer
             </p>
-            {isActive ? (
               <div className="mt-[30px]">
                 <div className="my-[20px] p-4 bg-[#13131a] rounded-[10px]">
                   <p className="mt-[0px] font-epilogue font-normal leading-[22px] text-[#808191]">
-                    Withdrawal is only allowed after the deadline or if the
+                  The goal has already been reached. If you want to continue the campaign,
+                  then click the continue button.
+                  </p>
+                </div>
+                <CustomButton
+                  btnType="button"
+                  title="Continue"
+                  styles="w-full mb-2 bg-[#8c6dfd]"
+                  handleClick={handleContinueCampaign}
+                />
+
+                <CustomButton
+                  btnType="button"
+                  title="Stop Campaign"
+                  styles="w-full mt-2 bg-[#b00707]"
+                  handleClick={ handleStopCampaign }
+                />
+              </div>
+              </div>
+              </div>
+        ) : (
+
+          <div className="flex-1">
+          <div className="mt-[20px] flex flex-col p-4 bg-[#1c1c24] rounded-[10px]">
+            <p className="font-epilogue fount-medium text-[20px] leading-[30px] text-center text-white">
+              Fund Transfer
+            </p>
+              <div className="mt-[30px]">
+                <div className="my-[20px] p-4 bg-[#13131a] rounded-[10px]">
+                  <p className="mt-[0px] font-epilogue font-normal leading-[22px] text-[#808191]">
+                  Withdrawal is only allowed after the deadline or if the
                     campaign is stopped.
                   </p>
                 </div>
                 <CustomButton
                   btnType="button"
                   title="Stop Campaign"
-                  styles="w-full bg-[#b00707]"
-                  handleClick={handleStopCampaign}
+                  styles="w-full mt-20px bg-[#b00707]"
+                  handleClick={ handleStopCampaign }
                 />
               </div>
-            ) : (
-              <div className="mt-[30px]">
-                <div className="my-[20px] p-4 bg-[#13131a] rounded-[10px]">
-                  <CustomButton
-                    btnType="button"
-                    title="Withdrawal"
-                    styles="w-full bg-[#8c6dfd]"
-                    handleClick={handleWithdrawal}
-                  />
-                </div>
               </div>
-            )}
-          </div>
-        </div>
+              </div>
+
+        )}      
       </div>
     </div>
   );

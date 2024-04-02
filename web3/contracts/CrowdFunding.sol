@@ -22,9 +22,9 @@ contract CrowdFunding {
     uint256 public numberOfCampaigns = 0;
 
     function createCampaign(address _owner, string memory _title, string memory _description, string memory _category, uint256 _target, uint256 _deadline, string memory _image) public returns (uint256) {
-        Campaign storage campaign = campaigns[numberOfCampaigns];
+        require(_deadline > block.timestamp, "The deadline should be a date in the future.");
 
-        require(campaign.deadline < block.timestamp, "The deadline should be a date in the future.");
+        Campaign storage campaign = campaigns[numberOfCampaigns];
 
         campaign.owner = _owner;
         campaign.title = _title;
@@ -41,6 +41,7 @@ contract CrowdFunding {
         return numberOfCampaigns - 1;
     }
 
+
     function donateToCampaign(uint256 _id) public payable {
         uint256 amount = msg.value;
 
@@ -56,12 +57,24 @@ contract CrowdFunding {
         }
     }
 
-    function isCampaignActive(uint256 _id) public view returns (bool) {
+    function isCampaignActive(uint256 _id) public returns (bool) {
         require(_id < numberOfCampaigns, "Invalid campaign ID");
 
         Campaign storage campaign = campaigns[_id];
-        return campaign.isActive && block.timestamp < campaign.deadline;
+
+        // Check if the campaign is active and the deadline has not passed
+        bool isActive = campaign.isActive && block.timestamp < campaign.deadline;
+
+        // If the fundraising goal is reached or the deadline is passed, stop the campaign
+        if (campaign.amountCollected >= campaign.target || block.timestamp >= campaign.deadline) {
+            campaign.isActive = false;
+            isActive = false; // Update the isActive variable to return false
+        }
+
+        return isActive;
     }
+
+
 
     function stopCampaign(uint256 _id) public {
         require(msg.sender == campaigns[_id].owner, "Only the owner can stop the campaign");
@@ -69,6 +82,14 @@ contract CrowdFunding {
         
         campaigns[_id].isActive = false;
     }
+
+    function continueCampaign(uint256 _id) public {
+        require(msg.sender == campaigns[_id].owner, "Only the owner can continue the campaign");
+        require(!campaigns[_id].isActive, "Campaign is already active");
+
+        campaigns[_id].isActive = true;
+    }
+
 
     function withdrawFunds(uint256 _id) public {
         Campaign storage campaign = campaigns[_id];
@@ -92,6 +113,15 @@ contract CrowdFunding {
         return (campaigns[_id].donators, campaigns[_id].donations);
     }
 
+
+    function checkAndPromptForCampaignStatus(uint256 _id) public view returns (bool) {
+        Campaign storage campaign = campaigns[_id];
+        // Check if the amount collected is greater than or equal to the target
+        // No need to check the deadline since we're only interested in goal achievement
+        return campaign.amountCollected >= campaign.target && block.timestamp < campaign.deadline;
+    }
+
+
     function getCampaigns() public view returns (Campaign[] memory) {
         Campaign[] memory allCampaigns = new Campaign[](numberOfCampaigns);
 
@@ -103,4 +133,6 @@ contract CrowdFunding {
 
         return allCampaigns;
     }
+
+
 }
