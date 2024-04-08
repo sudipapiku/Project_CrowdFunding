@@ -28,16 +28,18 @@ const CampaignDetails = () => {
     setDonators(data);
   }
 
+  const fetchIsActive = async () => {
+    const active = await isCampaignActive(state.pId);
+    setIsActive(active);
+  };
+
   useEffect(() => {
     if(contract) {
       fetchDonators();
+      fetchIsActive();
     }
 
-    const fetchIsActive = async () => {
-        const active = await isCampaignActive(state.pId);
-        setIsActive(active);
-    };
-      fetchIsActive();
+    
 
   }, [contract, address])
 

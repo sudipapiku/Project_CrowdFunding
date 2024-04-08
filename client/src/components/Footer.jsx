@@ -18,7 +18,7 @@ const Footer = () => {
     <footer className="flex-1 h-16 pd-4 pt-5 bg-[#1c1c24] rounded-[20px] text-[#bac2d6] font-epilogue font-normal text-[16px] flex justify-center  ">
         <div>
         <p className="font-epilogue font-normal text-[19px]"> 
-        <Link to='/'> CrowdFunding </Link>   | &copy; {currentYear} All rights reserved </p>
+        <Link to='/'> CrowdFunding </Link>   | &copy; {currentYear} All rights reserved. </p>
         </div>
     </footer>
   );
