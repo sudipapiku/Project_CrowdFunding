@@ -5,7 +5,7 @@ import { ethers } from 'ethers';
 const StateContext = createContext();
 
 export const StateContextProvider = ({ children }) => {
-  const { contract } = useContract('0x878E5F2f14d7324c0E3cD4D4c1346F5F57c9f16e');
+  const { contract } = useContract('0xEb1140181DcDeb4C1881C05039dC77F65b74D11C');
   const { mutateAsync: createCampaign } = useContractWrite(contract, 'createCampaign');
 
   const address = useAddress();
@@ -16,6 +16,7 @@ export const StateContextProvider = ({ children }) => {
       const data = await createCampaign({
         args: [
           address, // owner
+          form.name, // name
           form.title, // title
           form.description, // description
           form.category, // category
@@ -30,10 +31,11 @@ export const StateContextProvider = ({ children }) => {
       console.log("contract call failure", error)
     }
   }
+  
+  // Stop the campaign if the goal amount is reached or if the owner doesn't want to collect the extra amount
 
   const stopCampaign = async (campaignId) => {
     try {
-      // Stop the campaign if the goal amount is reached or if the owner doesn't want to collect the extra amount
       await contract.call('stopCampaign', [campaignId]);
       console.log("stopCampaign success");
     } catch (error) {
@@ -50,8 +52,7 @@ export const StateContextProvider = ({ children }) => {
         console.log("continueCampaign failure", error);
     }
   }
-  
-
+  // campaign active or not 
   const isCampaignActive = async (campaignId) => {
     try {
       if (!contract) {
@@ -67,8 +68,6 @@ export const StateContextProvider = ({ children }) => {
     }
   }
   
-  
-
   const checkAndPromptForCampaignStatus = async (campaignId) => {
     try {
       const campaigns = await getCampaigns();
@@ -105,6 +104,7 @@ export const StateContextProvider = ({ children }) => {
 
     const parsedCampaings = campaigns.map((campaign, i) => ({
       owner: campaign.owner,
+      name: campaign.name,
       title: campaign.title,
       description: campaign.description,
       category: campaign.category,

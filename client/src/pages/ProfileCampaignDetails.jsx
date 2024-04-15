@@ -69,7 +69,6 @@ const ProfileCampaignDetails = () => {
     // navigate('/');
   };
 
-
   return (
     <div>
       {isLoading && <Loader />}
@@ -81,7 +80,7 @@ const ProfileCampaignDetails = () => {
             alt="campaign"
             className="w-full h-[410px] object-cover rounded-xl"
           />
-          <div className="relative w-full h-[5px] bg-[#3a3a43] mt-2">
+          <div className="relative w-full h-[8px] bg-[#3a3a43] mt-2">
             <div
               className="absolute h-full bg-[#4acd8d]"
               style={{
@@ -107,9 +106,17 @@ const ProfileCampaignDetails = () => {
 
       <div className="mt-[60px] flex lg:flex-row flex-col gap-5">
         <div className="flex-[2] flex flex-col gap-[40px]">
+        <div>
+            <h4 className="font-epilogue font-semibold text-[20px] text-[#4acd8d] uppercase">Creator Name</h4>
+
+              <div className="mt-[20px]">
+                <p className="font-epilogue font-normal text-[20px] text-[#ebecf7] leading-[26px] text-justify">{state.name}</p>
+              </div>
+          </div>
+          
           <div>
-            <h4 className="font-epilogue font-semibold text-[18px] text-white uppercase">
-              Creator
+            <h4 className="font-epilogue font-semibold text-[20px] text-[#4acd8d] uppercase">
+              Creator Address
             </h4>
 
             <div className="mt-[20px] flex flex-row items-center flex-wrap gap-[14px]">
@@ -121,10 +128,10 @@ const ProfileCampaignDetails = () => {
                 />
               </div>
               <div>
-                <h4 className="font-epilogue font-semibold text-[14px] text-white break-all">
+                <h4 className="font-epilogue font-semibold text-[18px] text-white break-all">
                   {state.owner}
                 </h4>
-                <p className="mt-[4px] font-epilogue font-normal text-[12px] text-[#808191]">
+                <p className="mt-[4px] font-epilogue font-normal text-[18px] text-[#4acd8d]">
                   Creator Address
                 </p>
               </div>
@@ -132,19 +139,19 @@ const ProfileCampaignDetails = () => {
           </div>
 
           <div>
-            <h4 className="font-epilogue font-semibold text-[18px] text-white uppercase">
+            <h4 className="font-epilogue font-semibold text-[20px] text-[#4acd8d] uppercase">
               Story
             </h4>
 
             <div className="mt-[20px]">
-              <p className="font-epilogue font-normal text-[16px] text-[#808191] leading-[26px] text-justify">
+              <p className="font-epilogue font-normal text-[20px] text-[#ebecf7] leading-[26px] text-justify">
                 {state.description}
               </p>
             </div>
           </div>
 
           <div>
-            <h4 className="font-epilogue font-semibold text-[18px] text-white uppercase">
+            <h4 className="font-epilogue font-semibold text-[20px] text-[#4acd8d] uppercase">
               Donators
             </h4>
 
@@ -155,16 +162,16 @@ const ProfileCampaignDetails = () => {
                     key={`${item.donator}-${index}`}
                     className="flex justify-between items-center gap-4"
                   >
-                    <p className="font-epilogue font-normal text-[16px] text-[#b2b3bd] leading-[26px] break-ll">
+                    <p className="font-epilogue font-normal text-[18px] text-[#ebecf7] leading-[26px] break-ll">
                       {index + 1}. {item.donator}
                     </p>
-                    <p className="font-epilogue font-normal text-[16px] text-[#808191] leading-[26px] break-ll">
+                    <p className="font-epilogue font-normal text-[18px] text-[#ebecf7] leading-[26px] break-ll">
                       {item.donation}
                     </p>
                   </div>
                 ))
               ) : (
-                <p className="font-epilogue font-normal text-[16px] text-[#808191] leading-[26px] text-justify">
+                <p className="font-epilogue font-normal text-[20px] text-[#ebecf7] leading-[26px] text-justify">
                   No donators yet. Be the first one!
                 </p>
               )}
@@ -176,7 +183,7 @@ const ProfileCampaignDetails = () => {
 
           <div className="flex-1">
           <div className="mt-[20px] flex flex-col p-4 bg-[#1c1c24] rounded-[10px]">
-            <p className="font-epilogue fount-medium text-[20px] leading-[30px] text-center text-white">
+            <p className="font-epilogue fount-medium text-[20px] leading-[30px] text-center text-[#ebecf7]">
               Fund Transfer
             </p>
               <div className="mt-[30px]">
