@@ -22,7 +22,8 @@ const WithdrawalCampaignDetails = () => {
   const [donators, setDonators] = useState([]);
   const [isActive, setIsActive] = useState(true);
 
-  const remainingDays = state.deadline > Date.now() ? daysLeft(state.deadline) : 0;
+  const remainingDays =
+    state.deadline > Date.now() ? daysLeft(state.deadline) : 0;
 
   const fetchDonators = async () => {
     const data = await getDonations(state.pId);
@@ -32,6 +33,8 @@ const WithdrawalCampaignDetails = () => {
 
   const fetchIsActive = async () => {
     const active = await isCampaignActive(state.pId);
+    console.log("Is campaign active:", active ? "Yes" : "No");
+
     setIsActive(active);
   };
 
@@ -45,16 +48,33 @@ const WithdrawalCampaignDetails = () => {
   const handleStopCampaign = async () => {
     setIsLoading(true);
     await stopCampaign(state.pId);
-    // navigate('/')
     setIsLoading(false);
+    fetchIsActive();
   };
+
+  // const handleWithdrawal = async () => {
+  //   setIsLoading(true);
+  //   await withdrawFunds(state.pId);
+  //   // navigate('/')
+  //   setIsLoading(false);
+  // };
 
   const handleWithdrawal = async () => {
     setIsLoading(true);
-    await withdrawFunds(state.pId);
-    // navigate('/')
+  
+    try {
+      await withdrawFunds(state.pId);
+      // Withdrawal successful
+      console.log("Withdrawal successful");
+    } catch (error) {
+      console.error("Withdrawal failed:", error.message);
+      // Display an error message to the user
+      // You can also handle specific error cases here
+    }
+  
     setIsLoading(false);
   };
+  
 
   return (
     <div>
@@ -67,9 +87,9 @@ const WithdrawalCampaignDetails = () => {
             alt="campaign"
             className="w-full h-[410px] object-cover rounded-xl"
           />
-          <div className="relative w-full h-[5px] bg-[#3a3a43] mt-2">
+          <div className="relative w-full h-[8px] bg-[#3a3a43] mt-2">
             <div
-              className="absolute h-full bg-[#4acd8d]"
+              className=" object-cover rounded-xl absolute h-[8px] bg-[#4acd8d]"
               style={{
                 width: `${calculateBarPercentage(
                   state.target,
@@ -94,12 +114,12 @@ const WithdrawalCampaignDetails = () => {
       <div className="mt-[60px] flex lg:flex-row flex-col gap-5">
         <div className="flex-[2] flex flex-col gap-[40px]">
           <div>
-            <h4 className="font-epilogue font-semibold text-[18px] text-white uppercase">
-              Creator
+            <h4 className="font-epilogue font-semibold text-[20px] text-[#4acd8d] uppercase">
+              Creator Address
             </h4>
 
             <div className="mt-[20px] flex flex-row items-center flex-wrap gap-[14px]">
-              <div className="w-[52px] h-[52px] flex items-center justify-center rounded-full bg-[#2c2f32] cursor-pointer">
+              <div className="w-[60px] h-[60px] flex items-center justify-center rounded-full bg-[#2c2f32] cursor-pointer">
                 <img
                   src={thirdweb}
                   alt="user"
@@ -107,30 +127,28 @@ const WithdrawalCampaignDetails = () => {
                 />
               </div>
               <div>
-                <h4 className="font-epilogue font-semibold text-[14px] text-white break-all">
+                <h4 className="font-epilogue font-semibold text-[20px] text-white break-all">
                   {state.owner}
                 </h4>
-                <p className="mt-[4px] font-epilogue font-normal text-[12px] text-[#808191]">
-                  Creator Address
-                </p>
+                {/* <p className="mt-[4px] font-epilogue font-normal text-[20px] text-[#ebecf7]">Creator Address</p> */}
               </div>
             </div>
           </div>
 
           <div>
-            <h4 className="font-epilogue font-semibold text-[18px] text-white uppercase">
+            <h4 className="font-epilogue font-semibold text-[20px] text-[#4acd8d] uppercase">
               Story
             </h4>
 
             <div className="mt-[20px]">
-              <p className="font-epilogue font-normal text-[16px] text-[#808191] leading-[26px] text-justify">
+              <p className="font-epilogue font-normal text-[20px] text-[#ebecf7] leading-[26px] text-justify">
                 {state.description}
               </p>
             </div>
           </div>
 
           <div>
-            <h4 className="font-epilogue font-semibold text-[18px] text-white uppercase">
+            <h4 className="font-epilogue font-semibold text-[20px] text-[#4acd8d] uppercase">
               Donators
             </h4>
 
@@ -141,16 +159,16 @@ const WithdrawalCampaignDetails = () => {
                     key={`${item.donator}-${index}`}
                     className="flex justify-between items-center gap-4"
                   >
-                    <p className="font-epilogue font-normal text-[16px] text-[#b2b3bd] leading-[26px] break-ll">
+                    <p className="font-epilogue font-normal text-[18px] text-[#ebecf7] leading-[26px] break-ll">
                       {index + 1}. {item.donator}
                     </p>
-                    <p className="font-epilogue font-normal text-[16px] text-[#808191] leading-[26px] break-ll">
+                    <p className="font-epilogue font-normal text-[18px] text-[#ebecf7] leading-[26px] break-ll">
                       {item.donation}
                     </p>
                   </div>
                 ))
               ) : (
-                <p className="font-epilogue font-normal text-[16px] text-[#808191] leading-[26px] text-justify">
+                <p className="font-epilogue font-normal text-[20px] text-[#ebecf7] leading-[26px] text-justify">
                   No donators yet. Be the first one!
                 </p>
               )}
@@ -181,13 +199,12 @@ const WithdrawalCampaignDetails = () => {
             ) : (
               <div className="mt-[30px]">
                 <div className="my-[20px] p-4 bg-[#13131a] rounded-[10px]">
-
-                <CustomButton
-                  btnType="button"
-                  title="Withdrawal"
-                  styles="w-full bg-[#8c6dfd]"
-                  handleClick={handleWithdrawal}
-                />
+                  <CustomButton
+                    btnType="button"
+                    title="Withdrawal"
+                    styles="w-full bg-[#8c6dfd]"
+                    handleClick={handleWithdrawal}
+                  />
                 </div>
               </div>
             )}
@@ -198,4 +215,4 @@ const WithdrawalCampaignDetails = () => {
   );
 };
 
-export default WithdrawalCampaignDetails
+export default WithdrawalCampaignDetails;

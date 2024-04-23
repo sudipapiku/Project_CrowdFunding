@@ -19,10 +19,12 @@ contract CrowdFunding {
     }
 
     mapping(uint256 => Campaign) public campaigns;
-
+    mapping(address => uint256) public ownerBalances; // Track the balance of each campaign owner
     uint256 public numberOfCampaigns = 0;
 
-    function createCampaign(address _owner, string memory _name, string memory _title, string memory _description, string memory _category, uint256 _target, uint256 _deadline, string memory _image) public returns (uint256) {
+
+    function createCampaign(address _owner, string memory _name, string memory _title, string memory _description, string memory _category, uint256 _target, uint256 _deadline, string memory _image ) public returns (uint256) {
+        
         require(_deadline > block.timestamp, "The deadline should be a date in the future.");
 
         Campaign storage campaign = campaigns[numberOfCampaigns];
@@ -34,15 +36,13 @@ contract CrowdFunding {
         campaign.category = _category;
         campaign.target = _target;
         campaign.deadline = _deadline;
-        campaign.amountCollected = 0;
         campaign.image = _image;
-        campaign.isActive = true; // New campaigns are active by default
+        campaign.isActive = true;
 
         numberOfCampaigns++;
 
         return numberOfCampaigns - 1;
     }
-
 
     function donateToCampaign(uint256 _id) public payable {
         uint256 amount = msg.value;
@@ -52,26 +52,42 @@ contract CrowdFunding {
         campaign.donators.push(msg.sender);
         campaign.donations.push(amount);
 
-        (bool sent,) = payable(campaign.owner).call{value: amount}("");
+        address payable campaignOwner = payable(campaign.owner);
+        (bool sent,) = campaignOwner.call{value: amount}("");
 
-        if(sent) {
-            campaign.amountCollected = campaign.amountCollected + amount;
-        }
+        require(sent, "Transfer failed");
+
+        // Update the amount collected for the campaign
+        campaign.amountCollected += amount;
+
+        // Update the owner's balance
+        ownerBalances[campaign.owner] += amount;
     }
 
-    function isCampaignActive(uint256 _id) public returns (bool) {
+    function withdrawFunds(uint256 _id) public {
+        Campaign storage campaign = campaigns[_id];
+
+        require(msg.sender == campaign.owner, "Only the owner can withdraw funds");
+        require(block.timestamp >= campaign.deadline || !campaign.isActive, "Withdrawal is only allowed after the deadline or if the campaign is stopped");
+        // require(campaign.amountCollected > 0, "Insufficient funds for withdrawal");
+
+        uint256 amountToWithdraw = campaign.amountCollected;
+        campaign.amountCollected = 0;
+
+        payable(campaign.owner).transfer(amountToWithdraw);
+
+        // Deduct the withdrawn amount from the owner's balance
+        ownerBalances[campaign.owner] -= amountToWithdraw;
+    }
+
+
+    function isCampaignActive(uint256 _id) public view returns (bool) {
         require(_id < numberOfCampaigns, "Invalid campaign ID");
 
         Campaign storage campaign = campaigns[_id];
 
         // Check if the campaign is active and the deadline has not passed
         bool isActive = campaign.isActive && block.timestamp < campaign.deadline;
-
-        // If the fundraising goal is reached or the deadline is passed, stop the campaign
-        if (campaign.amountCollected >= campaign.target || block.timestamp >= campaign.deadline) {
-            campaign.isActive = false;
-            isActive = false; // Update the isActive variable to return false
-        }
 
         return isActive;
     }
@@ -90,20 +106,6 @@ contract CrowdFunding {
         require(!campaigns[_id].isActive, "Campaign is already active");
 
         campaigns[_id].isActive = true;
-    }
-
-
-    function withdrawFunds(uint256 _id) public {
-        Campaign storage campaign = campaigns[_id];
-
-        require(msg.sender == campaign.owner, "Only the owner can withdraw funds");
-        require(block.timestamp >= campaign.deadline || !campaign.isActive, "Withdrawal is only allowed after the deadline or if the campaign is stopped");
-        require(campaign.amountCollected > 0, "Insufficient funds for withdrawal");
-
-        uint256 amountToWithdraw = campaign.amountCollected;
-        campaign.amountCollected = 0;
-
-        payable(campaign.owner).transfer(amountToWithdraw);
     }
 
     function setCampaignActive(uint256 _id, bool _isActive) public {

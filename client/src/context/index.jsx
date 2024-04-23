@@ -5,7 +5,7 @@ import { ethers } from 'ethers';
 const StateContext = createContext();
 
 export const StateContextProvider = ({ children }) => {
-  const { contract } = useContract('0xEb1140181DcDeb4C1881C05039dC77F65b74D11C');
+  const { contract } = useContract('0xde395bae1005507f6C8a59809941456bf4Fa6380');
   const { mutateAsync: createCampaign } = useContractWrite(contract, 'createCampaign');
 
   const address = useAddress();
@@ -67,6 +67,8 @@ export const StateContextProvider = ({ children }) => {
       return false; // Return false in case of error
     }
   }
+
+
   
   const checkAndPromptForCampaignStatus = async (campaignId) => {
     try {
