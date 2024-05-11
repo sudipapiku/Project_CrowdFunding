@@ -188,7 +188,7 @@ const CampaignDetails = () => {
                     funds are used, as we utilize blockchain technology,
                     ensuring complete transparency for you.
                     <a
-                      href="https://testnet.ftmscan.com/address/0x878E5F2f14d7324c0E3cD4D4c1346F5F57c9f16e"
+                      href="https://testnet.ftmscan.com/address/0xde395bae1005507f6C8a59809941456bf4Fa6380"
                       style={{ color: "#8c6dfd" }}
                       target="_blank"
                       rel="noopener noreferrer"

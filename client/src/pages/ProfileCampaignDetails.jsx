@@ -189,8 +189,8 @@ const ProfileCampaignDetails = () => {
               <div className="mt-[30px]">
                 <div className="my-[20px] p-4 bg-[#13131a] rounded-[10px]">
                   <p className="mt-[0px] font-epilogue font-normal leading-[22px] text-[#808191]">
-                  The goal has already been reached. If you want to continue the campaign,
-                  then click the continue button.
+                  If you want to continue the campaign,
+                  then click the continue button. And If you want to stop the campaign then click the stop campaign button.
                   </p>
                 </div>
                 <CustomButton

@@ -84,7 +84,7 @@ const CreateCampaign = () => {
           />
 
           <FormField 
-            labelName="Goal *"
+            labelName="Required Fund *"
             placeholder="ETH 0.50"
             inputType="text"
             value={form.target}
