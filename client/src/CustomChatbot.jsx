@@ -36,7 +36,7 @@ const steps = [
       id: '3',
       options: [
         { value: 1, label: 'Can I join crowdfunding projects on this platform?', trigger: '31' },
-        { value: 2, label: 'What kind of projects can I support here?', trigger: '3' },
+        { value: 2, label: 'What kind of projects can I support here?', trigger: '32' },
         { value: 3, label: 'Back To Main Menu', trigger: '2' },
       ],
     },
