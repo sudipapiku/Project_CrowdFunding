@@ -1,3 +1,4 @@
+// App.js
 import React from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { Sidebar, Navbar, Footer } from './components';
@@ -26,7 +27,7 @@ const App = () => {
           </Routes>
 
           <div className="fixed bottom-4 right-4">
-            <CustomChatbot  />
+            <CustomChatbot />
           </div>
         </div>
       </div>
@@ -35,7 +36,7 @@ const App = () => {
         <Footer />
       </div>
     </div>
-  )
+  );
 }
 
 export default App;
