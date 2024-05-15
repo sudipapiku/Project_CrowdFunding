@@ -120,8 +120,6 @@ contract CrowdFunding {
 
     function checkAndPromptForCampaignStatus(uint256 _id) public view returns (bool) {
         Campaign storage campaign = campaigns[_id];
-        // Check if the amount collected is greater than or equal to the target
-        // No need to check the deadline since we're only interested in goal achievement
         return campaign.amountCollected >= campaign.target && block.timestamp < campaign.deadline;
     }
 
