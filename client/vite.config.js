@@ -8,4 +8,6 @@ export default defineConfig({
   define: {
     "process.env": {},
   },
+  base: '/Project_CrowdFunding/' 
+
 });
